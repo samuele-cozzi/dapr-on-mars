@@ -1,0 +1,22 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
+  name: dapr on mars
+build:
+  artifacts:
+  - image: rover
+    context: apps/rover
+    docker:
+      dockerfile: Dockerfile
+
+deploy:
+  helm:
+    releases:
+    - name: rover
+      chartPath: ../deploy/helm/rover
+      namespace: mars
+      createNamespace: true
+      artifactOverrides:
+        image: rover # no tag present!
+      imageStrategy:
+        helm: {} 
