@@ -1,7 +1,10 @@
-FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS base
 WORKDIR /app
+EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+ENV ASPNETCORE_URLS=http://+:80
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
 WORKDIR /src
 COPY ["rover.csproj", "./"]
 RUN dotnet restore "rover.csproj"

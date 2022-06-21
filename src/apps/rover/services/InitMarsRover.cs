@@ -1,6 +1,6 @@
 namespace Rover.Services;
 
-public class InitMarsService
+public class InitMarsService : IHostedService
 {
     private readonly ILogger<InitMarsService> _logger;
     private readonly MarsSettings _marsSettings;
@@ -15,7 +15,7 @@ public class InitMarsService
         _marsSettings = marsSettings?.Value ?? throw new ArgumentNullException(nameof(marsSettings));
     }
 
-    public Task InitMarsAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation($"Start Init Mars");
 
@@ -44,7 +44,10 @@ public class InitMarsService
         }
 
         _logger.LogInformation($"Finish Init Mars");
+    }
 
-        return Task.CompletedTask;
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        //Cleanup logic here
     }
 }

@@ -11,5 +11,8 @@ global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 
+global using Serilog;
+global using Dapr.Client;
+
 global using Rover.Services;
 global using Rover.Models;

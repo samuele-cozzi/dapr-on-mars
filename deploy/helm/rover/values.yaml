@@ -23,7 +23,13 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {}
+podAnnotations: 
+  dapr.io/enabled: "true"
+  dapr.io/app-id: "rover"
+  dapr.io/app-port: "80"
+  dapr.io/enable-api-logging: "true"
+  dapr.io/log-level: "debug"
+  dapr.io/sidecar-liveness-probe-delay-seconds: "120"
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -80,3 +86,14 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+daprComponents:
+  deploy: true
+  state:
+    name: rover-statestore
+    redisHost: "redis-master.redis-demo.svc.cluster.local:6379"
+    redisPwd: "Password01"
+#   pubsub:
+#     name: pubsub
+#     redisHost: redis-master.redis-demo.svc.cluster.local:6379
+#     redisPwd: Password01
