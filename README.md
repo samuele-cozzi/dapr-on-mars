@@ -34,6 +34,7 @@ helm create rover
 ```
 
 change the image repository
+add dapr sidecar and components
 
 ### 4. Skaffold
 

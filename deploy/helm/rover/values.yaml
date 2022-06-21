@@ -93,7 +93,7 @@ daprComponents:
     name: rover-statestore
     redisHost: "redis-master.redis-demo.svc.cluster.local:6379"
     redisPwd: "Password01"
-#   pubsub:
-#     name: pubsub
-#     redisHost: redis-master.redis-demo.svc.cluster.local:6379
-#     redisPwd: Password01
+  pubsub:
+    name: rover-pubsub
+    redisHost: "redis-master.redis-demo.svc.cluster.local:6379"
+    redisPwd: "Password01"
