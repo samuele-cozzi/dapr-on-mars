@@ -4,6 +4,7 @@ public class Position
 {
     public Coordinate Coordinate { get; set; }
     public FacingDirections FacingDirection { get; set; }
+    public bool IsBlocked { get; set; }
 
     public void MoveFarward(double angularStep)
     {

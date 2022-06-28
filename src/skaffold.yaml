@@ -20,3 +20,5 @@ deploy:
         image: rover # no tag present!
       imageStrategy:
         helm: {} 
+      setValues:
+         annotations."dapr\.io/app-id": rover1

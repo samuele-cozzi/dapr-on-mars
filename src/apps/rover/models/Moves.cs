@@ -1,6 +1,6 @@
 namespace Rover.Models;
 
-public enum Move
+public enum Moves
 {
     f,b,l,r
 }

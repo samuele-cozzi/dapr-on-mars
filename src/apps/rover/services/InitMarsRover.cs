@@ -5,8 +5,6 @@ public class InitMarsService : IHostedService
     private readonly ILogger<InitMarsService> _logger;
     private readonly MarsSettings _marsSettings;
 
-    private int? _exitCode;
-
     public InitMarsService(
         ILogger<InitMarsService> logger,
         IOptions<MarsSettings> marsSettings)

@@ -1,3 +1,5 @@
+using Dapr;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //builder.Host.UseSerilog();
@@ -7,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHealthChecks();
+builder.Services.AddControllers().AddDapr();
 
 builder.Services.Configure<RoverSettings>(builder.Configuration.GetSection(nameof(RoverSettings)));
 //builder.Services.Configure<IntegrationSettings>(builder.Configuration.GetSection(nameof(IntegrationSettings)));
@@ -14,6 +17,8 @@ builder.Services.Configure<MarsSettings>(builder.Configuration.GetSection(nameof
 builder.Services.Configure<DaprSettings>(builder.Configuration.GetSection(nameof(DaprSettings)));
 
 builder.Services.AddHostedService<InitMarsService>();
+builder.Services.AddHostedService<RoverWorkerService>();
+builder.Services.AddScoped<RoverService>();
 
 var app = builder.Build();
 
@@ -26,22 +31,41 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 app.MapHealthChecks("/");
+app.UseCloudEvents();
 
-app.MapGet("/position", async (IOptions<DaprSettings> daprSettings) =>
+app.MapGet("/position", [Topic("rover-pubsub","command-topic")] async (IOptions<DaprSettings> daprSettings) =>
 {
     var daprClient = new DaprClientBuilder().Build();
-    var result = await daprClient.GetStateAsync<Command>(
+    var result = await daprClient.GetStateAsync<Position>(
         daprSettings.Value.StateManagement.StoreName, daprSettings.Value.StateManagement.RoverPosition
     );
     return result;
 })
 .WithName("GetPosition");
 
-app.MapPost("/move", async (Command command,IOptions<DaprSettings> daprSettings) =>
+app.MapPost("/move", async (Command command,IOptions<DaprSettings> daprSettings, RoverService roverService) =>
 {
     var daprClient = new DaprClientBuilder().Build();
-    await daprClient.SaveStateAsync<Command>(
-        daprSettings.Value.StateManagement.StoreName, daprSettings.Value.StateManagement.RoverPosition, command);
+
+    Position actualPosition = await daprClient.GetStateAsync<Position>(
+        daprSettings.Value.StateManagement.StoreName, daprSettings.Value.StateManagement.RoverPosition
+    );
+    Position startingPosition = command.StartingPosition;
+
+    if (actualPosition == null){
+        actualPosition = command.StartingPosition;
+    }
+
+    if (
+        actualPosition?.Coordinate?.Latitude == startingPosition?.Coordinate?.Latitude 
+        && actualPosition?.Coordinate?.Longitude == startingPosition?.Coordinate?.Longitude 
+        && actualPosition?.FacingDirection == startingPosition?.FacingDirection 
+    ) {
+        var newPosition = roverService.Move(command);
+
+        await daprClient.SaveStateAsync<Position>(
+        daprSettings.Value.StateManagement.StoreName, daprSettings.Value.StateManagement.RoverPosition, newPosition);
+    }    
 })
 .WithName("Move");
 

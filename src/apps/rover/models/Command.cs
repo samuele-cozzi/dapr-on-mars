@@ -1,6 +1,6 @@
 namespace Rover.Models;
 
 public class Command {
-    public Move[] Moves { get; set; }
+    public Moves[] Moves { get; set; }
     public Position StartingPosition { get; set; }
 }
