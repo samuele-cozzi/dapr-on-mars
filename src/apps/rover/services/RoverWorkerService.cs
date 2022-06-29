@@ -31,16 +31,21 @@ public class RoverWorkerService : IHostedService, IDisposable
     private async void SendPosition(object? state){
 
         _logger.LogInformation($"Send Rover Position Start");
+        
+        try {
+            var daprClient = new DaprClientBuilder().Build();
 
-        var daprClient = new DaprClientBuilder().Build();
+            Position actualPosition = await daprClient.GetStateAsync<Position>(
+                _daprSettings.StateStoreName, _daprSettings.StateRoverPosition
+            );
 
-        Position actualPosition = await daprClient.GetStateAsync<Position>(
-            _daprSettings.StateStoreName, _daprSettings.StateRoverPosition
-        );
-
-        if (actualPosition != null){
-            await daprClient.PublishEventAsync<Position>(
-                _daprSettings.PubSubName, _daprSettings.PubSubPositionTopicName, actualPosition);
+            if (actualPosition != null){
+                await daprClient.PublishEventAsync<Position>(
+                    _daprSettings.PubSubName, _daprSettings.PubSubPositionTopicName, actualPosition);
+            }
+        }
+        catch (Exception ex){
+            _logger.LogError(ex, $"Error sending rover position");
         }
 
         _logger.LogInformation($"Send Rover Position End");

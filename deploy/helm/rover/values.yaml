@@ -91,9 +91,8 @@ daprComponents:
   deploy: true
   state:
     name: rover-statestore
-    redisHost: "redis-master.redis-demo.svc.cluster.local:6379"
-    redisPwd: "Password01"
+    host: "redis-master.redis-demo.svc.cluster.local:6379"
+    pwd: "Password01"
   pubsub:
     name: rover-pubsub
-    redisHost: "redis-master.redis-demo.svc.cluster.local:6379"
-    redisPwd: "Password01"
+    host: "amqp://user:LRGgEES6ty18ZYSP@rabbitmq.rabbitmq-demo.svc.cluster.local:5672"
