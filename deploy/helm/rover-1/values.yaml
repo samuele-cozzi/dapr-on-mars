@@ -98,3 +98,7 @@ daprComponents:
     host: "amqp://user:LRGgEES6ty18ZYSP@rabbitmq.rabbitmq-demo.svc.cluster.local:5672"
     # host: "redis-master.redis-demo.svc.cluster.local:6379"
     # pwd: "Password01"
+  commandPubSub:
+    name: rover-1-subscription-command  
+    topic: command-rover-1-topic
+    route: /move

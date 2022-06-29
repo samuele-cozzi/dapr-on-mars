@@ -96,3 +96,7 @@ daprComponents:
   pubsub:
     name: rover-pubsub
     host: "amqp://user:LRGgEES6ty18ZYSP@rabbitmq.rabbitmq-demo.svc.cluster.local:5672"
+  commandPubSub:
+    name: rover-subscription-command  
+    topic: command-rover-topic
+    route: /move
