@@ -35,12 +35,12 @@ public class RoverWorkerService : IHostedService, IDisposable
         var daprClient = new DaprClientBuilder().Build();
 
         Position actualPosition = await daprClient.GetStateAsync<Position>(
-            _daprSettings.StateManagement.StoreName, _daprSettings.StateManagement.RoverPosition
+            _daprSettings.StateStoreName, _daprSettings.StateRoverPosition
         );
 
         if (actualPosition != null){
-            //TODO
-            await daprClient.PublishEventAsync<Position>("rover-pubsub", "position-topic", actualPosition);
+            await daprClient.PublishEventAsync<Position>(
+                _daprSettings.PubSubName, _daprSettings.PubSubPositionTopicName, actualPosition);
         }
 
         _logger.LogInformation($"Send Rover Position End");

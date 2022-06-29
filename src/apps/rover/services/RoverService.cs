@@ -22,6 +22,7 @@ public class RoverService
     {
         _logger.LogInformation($"Start Move");
 
+        string roverId = command.StartingPosition.RoverId;
         bool isBlocked = false;
         double latitude = command.StartingPosition.Coordinate.Latitude;
         double longitude = command.StartingPosition.Coordinate.Longitude;
@@ -72,6 +73,7 @@ public class RoverService
         _logger.LogInformation($"Finish Move");
 
         return new Position(){
+            RoverId = roverId,
             FacingDirection = direction,
             Coordinate = new Coordinate()
             {

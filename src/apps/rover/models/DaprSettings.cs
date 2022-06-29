@@ -1,5 +1,8 @@
 namespace Rover.Models;
 
 public class DaprSettings {
-    public DaprStateSettings StateManagement { get; set; }
+    public string StateStoreName { get; set; }
+    public string StateRoverPosition { get; set; }
+    public string PubSubName  { get; set; }
+    public string PubSubPositionTopicName { get; set; }
 }

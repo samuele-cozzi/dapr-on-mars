@@ -33,11 +33,12 @@ if (app.Environment.IsDevelopment())
 app.MapHealthChecks("/");
 app.UseCloudEvents();
 
-app.MapGet("/position", [Topic("rover-pubsub","command-topic")] async (IOptions<DaprSettings> daprSettings) =>
+//app.MapGet("/position", [Topic("rover-pubsub","command-topic")] async (IOptions<DaprSettings> daprSettings) =>
+app.MapGet("/position", async (IOptions<DaprSettings> daprSettings) =>
 {
     var daprClient = new DaprClientBuilder().Build();
     var result = await daprClient.GetStateAsync<Position>(
-        daprSettings.Value.StateManagement.StoreName, daprSettings.Value.StateManagement.RoverPosition
+        daprSettings.Value.StateStoreName, daprSettings.Value.StateRoverPosition
     );
     return result;
 })
@@ -48,7 +49,7 @@ app.MapPost("/move", async (Command command,IOptions<DaprSettings> daprSettings,
     var daprClient = new DaprClientBuilder().Build();
 
     Position actualPosition = await daprClient.GetStateAsync<Position>(
-        daprSettings.Value.StateManagement.StoreName, daprSettings.Value.StateManagement.RoverPosition
+        daprSettings.Value.StateStoreName, daprSettings.Value.StateRoverPosition
     );
     Position startingPosition = command.StartingPosition;
 
@@ -60,11 +61,12 @@ app.MapPost("/move", async (Command command,IOptions<DaprSettings> daprSettings,
         actualPosition?.Coordinate?.Latitude == startingPosition?.Coordinate?.Latitude 
         && actualPosition?.Coordinate?.Longitude == startingPosition?.Coordinate?.Longitude 
         && actualPosition?.FacingDirection == startingPosition?.FacingDirection 
+        && actualPosition?.RoverId == startingPosition?.RoverId
     ) {
         var newPosition = roverService.Move(command);
 
         await daprClient.SaveStateAsync<Position>(
-        daprSettings.Value.StateManagement.StoreName, daprSettings.Value.StateManagement.RoverPosition, newPosition);
+        daprSettings.Value.StateStoreName, daprSettings.Value.StateRoverPosition, newPosition);
     }    
 })
 .WithName("Move");
