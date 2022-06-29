@@ -15,6 +15,6 @@ spec:
   #   secretKeyRef:
   #     name: redis
   #     key: redis-password
-  - name: actorStateStore
-    value: "true"
+  # - name: actorStateStore
+  #   value: "true"
 {{ end }}

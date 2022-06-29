@@ -17,7 +17,7 @@ builder.Services.Configure<MarsSettings>(builder.Configuration.GetSection(nameof
 builder.Services.Configure<DaprSettings>(builder.Configuration.GetSection(nameof(DaprSettings)));
 
 builder.Services.AddHostedService<InitMarsService>();
-//builder.Services.AddHostedService<RoverWorkerService>();
+builder.Services.AddHostedService<RoverWorkerService>();
 builder.Services.AddScoped<RoverService>();
 
 var app = builder.Build();

@@ -20,11 +20,11 @@ deploy:
         image: rover # no tag present!
       imageStrategy:
         helm: {} 
-    # - name: rover-1
-    #   chartPath: ../deploy/helm/rover-1
-    #   namespace: mars
-    #   createNamespace: true
-    #   artifactOverrides:
-    #     image: rover # no tag present!
-    #   imageStrategy:
-    #     helm: {} 
+    - name: rover-1
+      chartPath: ../deploy/helm/rover-1
+      namespace: mars
+      createNamespace: true
+      artifactOverrides:
+        image: rover # no tag present!
+      imageStrategy:
+        helm: {} 
