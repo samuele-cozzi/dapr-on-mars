@@ -12,6 +12,10 @@ build:
     context: apps/rover
     docker:
       dockerfile: Dockerfile-1
+  - image: control-api
+    context: apps/control-api
+    docker:
+      dockerfile: Dockerfile
 
 deploy:
   helm:
@@ -30,5 +34,13 @@ deploy:
       createNamespace: true
       artifactOverrides:
         image: rover-1 # no tag present!
+      imageStrategy:
+        helm: {} 
+    - name: control-api
+      chartPath: ../deploy/helm/control-api
+      namespace: control-room
+      createNamespace: true
+      artifactOverrides:
+        image: control-api # no tag present!
       imageStrategy:
         helm: {} 
