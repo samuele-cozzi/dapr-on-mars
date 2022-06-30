@@ -4,6 +4,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHealthChecks();
+builder.Services.AddControllers().AddDapr();
+
+
+builder.Services.Configure<DaprSettings>(builder.Configuration.GetSection(nameof(DaprSettings)));
+
 
 var app = builder.Build();
 
@@ -14,30 +20,43 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+//app.UseHttpsRedirection();
+app.MapHealthChecks("/");
+app.UseCloudEvents();
 
-app.MapGet("/weatherforecast", () =>
+// app.MapGet("/position", async (IOptions<DaprSettings> daprSettings) =>
+// {
+//     var daprClient = new DaprClientBuilder().Build();
+//     var result = await daprClient.GetStateAsync<Position>(
+//         daprSettings.Value.StateStoreName, daprSettings.Value.StateRoverPosition
+//     );
+//     return result;
+// })
+// .WithName("GetPosition");
+
+app.MapPost("/move", async (Command command,IOptions<DaprSettings> daprSettings) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    var daprClient = new DaprClientBuilder().Build();
+
+    if (command.StartingPosition == null)
+    {
+        Position actualPosition = await daprClient.GetStateAsync<Position>(
+            daprSettings.Value.StateStoreName, String.Format(daprSettings.Value.StateRoverPosition, command.RoverId)
+        );
+        
+        command.StartingPosition = actualPosition;
+    }
+
+    await daprClient.PublishEventAsync<Command>(
+        daprSettings.Value.PubSubName, 
+        String.Format(daprSettings.Value.PubSubPositionTopicName, command.RoverId), 
+        command);
+
+     
 })
-.WithName("GetWeatherForecast");
+.WithName("Move");
+
+
 
 app.Run();
-
-record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

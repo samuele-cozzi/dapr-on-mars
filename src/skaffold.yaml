@@ -8,6 +8,10 @@ build:
     context: apps/rover
     docker:
       dockerfile: Dockerfile
+  - image: rover-1
+    context: apps/rover
+    docker:
+      dockerfile: Dockerfile-1
 
 deploy:
   helm:
@@ -25,6 +29,6 @@ deploy:
       namespace: mars
       createNamespace: true
       artifactOverrides:
-        image: rover # no tag present!
+        image: rover-1 # no tag present!
       imageStrategy:
         helm: {} 
