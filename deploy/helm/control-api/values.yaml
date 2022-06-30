@@ -1,11 +1,11 @@
-# Default values for control-api.
+# Default values for rover.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: control-api
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -23,7 +23,13 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {}
+podAnnotations: 
+  dapr.io/enabled: "true"
+  dapr.io/app-id: "control-api"
+  dapr.io/app-port: "80"
+  dapr.io/enable-api-logging: "true"
+  dapr.io/log-level: "debug"
+  dapr.io/sidecar-liveness-probe-delay-seconds: "120"
 
 podSecurityContext: {}
   # fsGroup: 2000
@@ -80,3 +86,17 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+daprComponents:
+  deploy: true
+  state:
+    name: control-statestore
+    host: "redis-master.redis-demo.svc.cluster.local:6379"
+    pwd: "Password01"
+  pubsub:
+    name: control-pubsub
+    host: "amqp://user:LRGgEES6ty18ZYSP@rabbitmq.rabbitmq-demo.svc.cluster.local:5672"
+  # commandPubSub:
+  #   name: rover-subscription-command  
+  #   topic: command-rover-topic
+  #   route: /move
