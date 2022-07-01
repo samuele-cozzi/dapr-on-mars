@@ -8,10 +8,6 @@ build:
     context: apps/rover
     docker:
       dockerfile: Dockerfile
-  - image: rover-1
-    context: apps/rover
-    docker:
-      dockerfile: Dockerfile-1
   - image: control-api
     context: apps/control-api
     docker:
@@ -30,10 +26,10 @@ deploy:
         helm: {} 
     - name: rover-1
       chartPath: ../deploy/helm/rover-1
-      namespace: mars
+      namespace: mars-1
       createNamespace: true
       artifactOverrides:
-        image: rover-1 # no tag present!
+        image: rover # no tag present!
       imageStrategy:
         helm: {} 
     - name: control-api

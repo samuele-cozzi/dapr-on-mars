@@ -14,6 +14,10 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+env: 
+  "DaprSettings__StateStoreName": "rover-1-statestore"
+  "DaprSettings__PubSubName": "rover-1-pubsub"
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

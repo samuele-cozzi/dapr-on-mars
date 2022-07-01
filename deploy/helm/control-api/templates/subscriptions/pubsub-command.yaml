@@ -1,0 +1,10 @@
+{{- if .Values.daprComponents.deploy }}
+apiVersion: dapr.io/v1alpha1
+kind: Subscription
+metadata:
+    name: {{ .Values.daprComponents.commandPubSub.name }}
+spec:
+    pubsubname: {{ .Values.daprComponents.pubsub.name }}
+    topic: {{ .Values.daprComponents.commandPubSub.topic }}
+    route: {{ .Values.daprComponents.commandPubSub.route }}
+{{ end }}

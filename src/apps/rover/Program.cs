@@ -33,7 +33,6 @@ if (app.Environment.IsDevelopment())
 app.MapHealthChecks("/");
 app.UseCloudEvents();
 
-//app.MapGet("/position", [Topic("rover-pubsub","command-topic")] async (IOptions<DaprSettings> daprSettings) =>
 app.MapGet("/position", async (IOptions<DaprSettings> daprSettings) =>
 {
     var daprClient = new DaprClientBuilder().Build();

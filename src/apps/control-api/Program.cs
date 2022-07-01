@@ -25,15 +25,25 @@ if (app.Environment.IsDevelopment())
 app.MapHealthChecks("/");
 app.UseCloudEvents();
 
-// app.MapGet("/position", async (IOptions<DaprSettings> daprSettings) =>
-// {
-//     var daprClient = new DaprClientBuilder().Build();
-//     var result = await daprClient.GetStateAsync<Position>(
-//         daprSettings.Value.StateStoreName, daprSettings.Value.StateRoverPosition
-//     );
-//     return result;
-// })
-// .WithName("GetPosition");
+app.MapGet("/position", async (string roverId, IOptions<DaprSettings> daprSettings) =>
+{
+    var daprClient = new DaprClientBuilder().Build();
+    var result = await daprClient.GetStateAsync<Position>(
+        daprSettings.Value.StateStoreName, String.Format(daprSettings.Value.StateRoverPosition, roverId)
+    );
+    return result;
+})
+.WithName("GetPosition");
+
+app.MapPost("/position", async (Position position,IOptions<DaprSettings> daprSettings) =>
+{
+    var daprClient = new DaprClientBuilder().Build();
+
+    await daprClient.SaveStateAsync<Position>(
+        daprSettings.Value.StateStoreName, String.Format(daprSettings.Value.StateRoverPosition, position.RoverId), position);
+     
+})
+.WithName("PostPosition");
 
 app.MapPost("/move", async (Command command,IOptions<DaprSettings> daprSettings) =>
 {
