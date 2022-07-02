@@ -9,6 +9,7 @@ builder.Services.AddControllers().AddDapr();
 
 
 builder.Services.Configure<DaprSettings>(builder.Configuration.GetSection(nameof(DaprSettings)));
+builder.Services.Configure<RoverSettings>(builder.Configuration.GetSection(nameof(RoverSettings)));
 
 
 var app = builder.Build();
@@ -24,6 +25,12 @@ if (app.Environment.IsDevelopment())
 //app.UseHttpsRedirection();
 app.MapHealthChecks("/");
 app.UseCloudEvents();
+
+app.MapGet("/rovers", async (IOptions<RoverSettings> roverSettings) =>
+{
+    return roverSettings.Value.RoverIds;
+})
+.WithName("GetRovers");
 
 app.MapGet("/position", async (string roverId, IOptions<DaprSettings> daprSettings) =>
 {
@@ -56,6 +63,10 @@ app.MapPost("/move", async (Command command,IOptions<DaprSettings> daprSettings)
         );
         
         command.StartingPosition = actualPosition;
+    }
+    else
+    {
+        command.StartingPosition.RoverId = command.RoverId;
     }
 
     await daprClient.PublishEventAsync<Command>(
