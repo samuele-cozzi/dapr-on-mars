@@ -12,6 +12,10 @@ build:
     context: apps/control-api
     docker:
       dockerfile: Dockerfile
+  - image: control-ui
+    context: apps/control-ui
+    docker:
+      dockerfile: Dockerfile
 
 deploy:
   helm:

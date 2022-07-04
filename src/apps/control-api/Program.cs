@@ -42,12 +42,37 @@ app.MapGet("/position", async (string roverId, IOptions<DaprSettings> daprSettin
 })
 .WithName("GetPosition");
 
+app.MapGet("/positions", async (string roverId, IOptions<DaprSettings> daprSettings) =>
+{
+    var daprClient = new DaprClientBuilder().Build();
+    var result = await daprClient.GetStateAsync<Position>(
+        daprSettings.Value.StateStoreName, String.Format(daprSettings.Value.StateRoverPositions, roverId)
+    );
+    return result;
+})
+.WithName("GetPositions");
+
 app.MapPost("/position", async (Position position,IOptions<DaprSettings> daprSettings) =>
 {
     var daprClient = new DaprClientBuilder().Build();
 
     await daprClient.SaveStateAsync<Position>(
         daprSettings.Value.StateStoreName, String.Format(daprSettings.Value.StateRoverPosition, position.RoverId), position);
+
+    List<Position> positions = new List<Position>();
+
+    try{
+        positions = await daprClient.GetStateAsync<List<Position>>(
+            daprSettings.Value.StateStoreName, String.Format(daprSettings.Value.StateRoverPositions, position.RoverId));
+    }
+    catch(Exception ex){
+        positions = new List<Position>();
+    }
+
+    positions.Add(position);
+
+    await daprClient.SaveStateAsync<List<Position>>(
+        daprSettings.Value.StateStoreName, String.Format(daprSettings.Value.StateRoverPositions, position.RoverId), positions);
      
 })
 .WithName("PostPosition");
