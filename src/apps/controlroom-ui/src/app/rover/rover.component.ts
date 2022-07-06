@@ -11,6 +11,7 @@ import { RoverService } from '../rover.service';
 })
 export class RoverComponent implements OnInit {
 
+  rovers: string[] = [];
   commands: string[] = [];
   position: RoverPosition | undefined;
   positions: RoverPosition[] = [];
@@ -62,6 +63,13 @@ export class RoverComponent implements OnInit {
 
     this.reoverService.getRoverPositions()
       .subscribe(positions => this.positions = positions);
+
+    this.reoverService.getRovers()
+      .then((value : string[]) => 
+        this.rovers = value
+      ).catch((err) => 
+        this.rovers = []
+      );   
   }
 
 }

@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'control-ui'`, () => {
+  it(`should have as title 'controlroom-ui'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('control-ui');
+    expect(app.title).toEqual('controlroom-ui');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('control-ui app is running!');
+    expect(compiled.querySelector('.content span')?.textContent).toContain('controlroom-ui app is running!');
   });
 });

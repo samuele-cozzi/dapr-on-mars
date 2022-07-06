@@ -1,11 +1,18 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "8519e553-a991-4caf-9c45-d75270bb7391"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "control-ui": {
+    "controlroom-ui": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -13,7 +20,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/control-ui",
+            "outputPath": "dist/controlroom-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -23,6 +30,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -50,8 +58,8 @@
               "outputHashing": "all"
             },
             "development": {
-              "buildOptimizer": false,
-              "optimization": false,
+              "buildOptimizer": true,
+              "optimization": true,
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
@@ -64,10 +72,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "control-ui:build:production"
+              "browserTarget": "controlroom-ui:build:production"
             },
             "development": {
-              "browserTarget": "control-ui:build:development"
+              "browserTarget": "controlroom-ui:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -75,7 +83,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "control-ui:build"
+            "browserTarget": "controlroom-ui:build"
           }
         },
         "test": {
@@ -90,6 +98,7 @@
               "src/assets"
             ],
             "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -97,5 +106,6 @@
         }
       }
     }
-  }
+  },
+  "defaultProject": "controlroom-ui"
 }
